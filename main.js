@@ -58,28 +58,28 @@ colgroup.appendChild(col3);//a colgrouphoz adom hozzá
 const thead = document.createElement('thead');//thead elem letrehozasa itt tortenik ez lesz a fejlec
 table.appendChild(thead);//hozzáadom a tablehez
 
-//Létrehozunk egy sort a fejlécnek
-const headerRow = document.createElement('tr');//itt hozok létre egy tr elemet 
-thead.appendChild(headerRow);//hozzadaom a theadre
-
-//Az első cella létrehozása a fejléc sorában
-const headerCell = document.createElement('th');//itt egy th elemet hozok letre
-headerCell.innerHTML = header.szerzo_nev;//a cellaban a header objektum szerzo_nev tulajdonsaganak az erteket iratjuk ki
-headerRow.appendChild(headerCell);//a headerRow-hoz (fejléc sorához) adom hozzá
-
-//A második cella létrehozása a fejléc sorában
-const headerCell2 = document.createElement('th');//itt egy th elemet hozok letre
-headerCell2.innerHTML = header.korszak;//a cellaban a header objektum korszak tulajdonsaganak az erteket iratjuk ki
-headerRow.appendChild(headerCell2);//a headerRow-hoz (fejléc sorához) adom hozzá
-
-//A harmadik cella létrehozása a fejléc sorában
-const headerCell3 = document.createElement('th');//itt egy th elemet hozok letre
-headerCell3.innerHTML = header.szerelmek;//a cellaban a header objektum szerelmek tulajdonsaganak az erteket iratjuk ki
-headerRow.appendChild(headerCell3);//a headerRow-hoz (fejléc sorához) adom hozzá
-
 //Itt hozzuk létre a táblázat törzsét
 const tbody = document.createElement('tbody');//létrehozok egy tbody elemet
 table.appendChild(tbody);//hozzáadjuk a tbody-t a table-hez
+
+
+function generateFejlec(){ //fejlec legeneralasa
+    const header = ["Szerző neve", "Korszak", "Szerelmek"]; //a header nevű tömbbe eltároljuk az adatokat amik stringek
+
+    const headerRow = document.createElement('tr'); //a fejlécnek létrehozok egy sort
+    thead.appendChild(headerRow); //thead elemhez hozzáadom az új sorunkat
+
+    for (const item of header) { //a header tömböt for of-al járom be
+        const headerCell = document.createElement('th'); //létrehozok egy uj cellat 
+        headerCell.innerHTML = item; //a headerCell cellájának adom meg az éppen aktuális elemet
+        headerRow.appendChild(headerCell); //végül a cellát hozzáadjuk a fejléc sorához
+        if(item == "Szerelmek"){//ha a szerelmek oszlopnál tartunk akkor:
+            headerCell.colSpan = "2";//adunk neki egy cellaegyesítést mivel tujduk hogy az arrayünkben úgyis van több szerelmes kötlő
+        }
+    }
+}
+
+generateFejlec();//itt hívjuk meg a fejlécet generáló függvényt
 
 function renderTable(){//itt definiálom a renderTable függvényemet
     for(const currentElement of array){//itt a ciklusunk végigiterál az array tömbünk elemein és a currentElement lesz az aktuális elem
@@ -103,7 +103,7 @@ function renderTable(){//itt definiálom a renderTable függvényemet
         
         if(currentElement.szerelem2 !== undefined){//itt ellenőrizzük azt hogy az aktuális szerelem2 és a szerelem2 nem egyenlő-e undefineddel, és ha egyik sem az(undefined), csak akkor fut le tovább a kód
 
-        headerCell3.colSpan = "2"//Ha idáig lefutott a kódunk akkor biztosan szükség lesz cellaegyesítésre és azt pedig itt adjuk meg a headerCell3 valtozonak
+        //headerCell3.colSpan = "2"//Ha idáig lefutott a kódunk akkor biztosan szükség lesz cellaegyesítésre és azt pedig itt adjuk meg a headerCell3 valtozonak
 
         const szerelem2 = document.createElement('td');//letrehozok egy td elemet
         szerelem2.innerHTML = currentElement.szerelem2;//az aktuális elem (currentElement) szerelem2 tulajdonságának értéke lesz itt megjelenítve 
@@ -145,7 +145,7 @@ form.addEventListener('submit', function (e) {
     if(!egyszeruValidacio(korszak_HTMLelement, "Add meg a korszakot")){//itt hívjuk meg a függvényünket
         valid = false;//a valid változónak false értéket adunk
     }
-    if(!osszetettValidacio(szerelem1_HTMLelement, szerelem2_HTMLelement, volteMasikcheck, "add már meg az elso szerelmét!", "hol a második szerelme", "add meg mindkét szerelmet")){//függvényhívás itt adjuk meg neki a sok bemeneti paraméterét
+    if(!osszetettValidacio(szerelem1_HTMLelement, szerelem2_HTMLelement, volteMasikcheck, "add már meg az elso szerelmét!", "add meg mindkét szerelmet","hol a második szerelme")){//függvényhívás itt adjuk meg neki a sok bemeneti paraméterét
         valid = false;//egy valid változót false-ra állítunk
     }
     
