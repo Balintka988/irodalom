@@ -139,23 +139,13 @@ form.addEventListener('submit', function (e) {
     }
     let valid = true;//itt megadjuk a valid változónak kezdőérték ként hogy true ezt majd a későbbiekben fogjuk változtatni
 
-    if(szerzo_value === ""){//ellenőrizzük hogy a kolto nevének input mezője üres-e
-        const parentElement = kolto_nevHTMLelement.parentElement;//megkeressük a kolto input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
-        const errorPlace = parentElement.querySelector('.error');//a korszak szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
-        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
-            errorPlace.innerHTML = "Meg kell adni a szerzőt";//megadjuk neki manuálisan a hiaüzenetet (stringet) és itt is iratjuk ki
-        }
-        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+    if(!egyszeruValidacio(kolto_nevHTMLelement, "Add meg a költő nevét")){//itt hívjuk meg a függvényünket
+        valid = false;//a valid változónak false értéket adunk
+    }
+    if(!egyszeruValidacio(korszak_HTMLelement, "Add meg a korszakot")){//itt hívjuk meg a függvényünket
+        valid = false;//a valid változónak false értéket adunk
     }
 
-    if(korszak_value === ""){//ellenőrizzük hogy a korszak nevének input mezője üres-e
-        const parentElement = korszak_HTMLelement.parentElement;//megkeressük a korszak input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
-        const errorPlace = parentElement.querySelector('.error');//a korszak szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
-        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
-            errorPlace.innerHTML = "Meg kell adni a korszakot!";//megadjuk neki manuálisan a hiaüzenetet (stringet) és itt is iratjuk ki
-        }
-        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
-    }
 
     if(szerelem1_value === ""){//hogyha nem írtak semmit a szerelem1 inputjába akkor:
         szerelem1_value = "-";//egy kötőjelet fogunk megjeleníteni
@@ -176,3 +166,16 @@ form.addEventListener('submit', function (e) {
     }
 }
 );
+
+function egyszeruValidacio(inputHtmlelement, errormessage){//létrehozunk egy föggvényt két bemeneti paraméter
+    let valid = true;//valid valtozo deklarálása
+    if(inputHtmlelement.value === ""){//ellenőrizzük hogy a korszak nevének input mezője üres-e
+        const parentElement = inputHtmlelement.parentElement;//megkeressük a korszak input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
+        const errorPlace = parentElement.querySelector('.error');//a korszak szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
+        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
+            errorPlace.innerHTML = errormessage;//megadjuk neki a hiaüzenetet a bemeneti paraméterünkből (stringet) és itt is iratjuk ki
+        }
+        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+    }
+    return valid;//visszatérünk a valid valtozonkkal
+}
