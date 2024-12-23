@@ -1,0 +1,15 @@
+table, th, td {
+    border-collapse: collapse ;
+    border: 1px solid black ;
+}
+
+thead th:nth-child(2) {
+    background-color: lightgray;
+}
+
+.column {
+    background-color: lightgrey;
+}
+.error {
+    color: red;
+}
