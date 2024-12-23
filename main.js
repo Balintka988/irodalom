@@ -1,4 +1,4 @@
-const array = [//létrehozok egy array tömböt amibe eltárolom a szerzők dolgait
+const koltok_array = [//létrehozok egy array tömböt amibe eltárolom a szerzők dolgait
     {
         szerzo: "Balassi Bálint", //szerző neve
         korszak: "reformáció", //korszak
@@ -81,8 +81,8 @@ function generateFejlec(){ //fejlec legeneralasa
 
 generateFejlec();//itt hívjuk meg a fejlécet generáló függvényt
 
-function renderTable(){//itt definiálom a renderTable függvényemet
-    for(const currentElement of array){//itt a ciklusunk végigiterál az array tömbünk elemein és a currentElement lesz az aktuális elem
+function renderTable(koltok_array){//itt definiálom a renderTable függvényemet
+    for(const currentElement of koltok_array){//itt a ciklusunk végigiterál az array tömbünk elemein és a currentElement lesz az aktuális elem
         //sor létrehozása
         const tbodyRow = document.createElement('tr');//létrehozok egy tr elemet ami az első sor lesz a tablazatban
         tbody.appendChild(tbodyRow);//hozzaadom a tbody-hoz  
@@ -117,7 +117,7 @@ function renderTable(){//itt definiálom a renderTable függvényemet
     }
 }
 
-renderTable();//a rendeTable függvényt itt hívom meg
+renderTable(koltok_array);//a rendeTable függvényt itt hívom meg és megadom neki hogy melyik arrayből dolgozzon
 
 form.addEventListener('submit', function (e) {
     e.preventDefault(); // Alapértelmezett viselkedés letiltása
@@ -162,9 +162,9 @@ form.addEventListener('submit', function (e) {
             szerelem2: szerelem2_value//a szerelem2 erteke a szerelem2_value lesz
         };
     
-        array.push(newElement);//itt adjuk hozzá az arrayhez az új adatokat
+        koltok_array.push(newElement);//itt adjuk hozzá az arrayhez az új adatokat
         tbody.innerHTML = ''; // Az aktuális táblázat tartalmának törlése
-        renderTable(); // Újra rendereljük a táblázatot az új elemmel
+        renderTable(koltok_array); // Újra rendereljük a táblázatot az új elemmel
         thisForm.reset();//itt töröljük az input mezőkbe beírt dolgokat
     }
 }
