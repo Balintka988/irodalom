@@ -24,35 +24,10 @@ const koltok_array = [//létrehozok egy array tömböt amibe eltárolom a szerz�
     }
 ];
 
-
-const header = {// itt hozok létre egy objektumot a táblázatunk fejlécének
-    szerzo_nev: "Szerző Neve", // fejléc mezője a szerzo_nevehez
-    korszak: "Korszak", // fejléc mezője a korszakhoz
-    szerelmek: "Szerelmek" // fejléc mezője a szerelmekhez
-};
-
 //Itt hozzuk létre a táblázatot
 const table = document.createElement('table');//létrehozok egy table elemet, ami majd a tablazatomat fogja tartalmazni
 document.body.appendChild(table);//Hozzáadom a bodyhoz
 //A colgroup elemek szabályozzák a táblázatunk oszlopainak stílusát
-
-//A colgroup elemet hozzuk it létre
-const colgroup = document.createElement('colgroup');//itt hozom létre a colgroup elemet
-table.appendChild(colgroup);//hozzáadjuk a tablehoz
-
-//itt definiálom az első oszlopot 
-const col1 = document.createElement('col');//itt hozom letre a col elemet
-col1.className = "column";//itt adok neki egy className-t ez alapjan talalja meg a css
-colgroup.appendChild(col1);//a colgrouphoz adom hozzá
-
-//itt definiálom a második oszlopot, nem adok neki semmit mert nem kell semmit megjelenítenie
-const col2 = document.createElement('col');//itt hozom letre a col elemet
-colgroup.appendChild(col2);//a colgrouphoz adom hozzá
-
-//itt definiálom a harmadik oszlopot 
-const col3 = document.createElement('col');//itt hozom letre a col elemet
-col3.className = "column";//itt adok neki egy className-t 
-colgroup.appendChild(col3);//a colgrouphoz adom hozzá
 
 //A táblázat fejlécének létrehozása
 const thead = document.createElement('thead');//thead elem letrehozasa itt tortenik ez lesz a fejlec
@@ -62,7 +37,11 @@ table.appendChild(thead);//hozzáadom a tablehez
 const tbody = document.createElement('tbody');//létrehozok egy tbody elemet
 table.appendChild(tbody);//hozzáadjuk a tbody-t a table-hez
 
-
+/**
+ * fejlécet itt generálom le
+ * egy egyszerű tömböt járok be és minden esetben az aktuálisat adom meg a fejléc cellájának
+ * ha a szerelmekhez érek akkor annak adok egy colSpan 2-t mert tudom hogy van tobb 2szerelmes is a koltok array-ban
+ */
 function generateFejlec(){ //fejlec legeneralasa
     const header = ["Szerző neve", "Korszak", "Szerelmek"]; //a header nevű tömbbe eltároljuk az adatokat amik stringek
 
@@ -81,6 +60,10 @@ function generateFejlec(){ //fejlec legeneralasa
 
 generateFejlec();//itt hívjuk meg a fejlécet generáló függvényt
 
+/**
+ * Ebben a függvényben generálom le a formot
+ * A függvény a formFileds tömbünkön lépked végig és ezeket az értékeket adja meg a dinamikusan létrehozott formunknak
+ */
 function generateForm(){//létrehozunk egy függvényt amely le fogja generálni a formunkat
     const formFields = [//tömb lérehozása függvényen belül is lehet mert csak itt használom
         { id: "kolto_nev", label: "Költő neve:", type: "text"},//id, label, type megadása
@@ -119,6 +102,12 @@ function generateForm(){//létrehozunk egy függvényt amely le fogja generálni
 }
 generateForm();//függvényhívás
 
+/**
+ * ezáltal a függvény által jelenik meg a táblázatunk
+ * 
+ * @param {Array} irodalom_array - ebben a tömmben tároljuk az összes olyan adatot amit szeretnénk majd 
+ * látni a képernyőnkön, pl.:szerzo neve, korszak stb
+ */
 function renderTable(koltok_array){//itt definiálom a renderTable függvényemet
     for(const currentElement of koltok_array){//itt a ciklusunk végigiterál az array tömbünk elemein és a currentElement lesz az aktuális elem
         //sor létrehozása
@@ -207,44 +196,92 @@ form.addEventListener('submit', function (e) {
     }
 }
 );
-
+/**
+ * ellenőrizzük hogy az aktuális input mező üres-e, hogyha igen akkor megjelenítünk egy hibaüzenetet alatta
+ * 
+ * @param {htmlElement} htmlElement - az az input mező amelyiket ellenőrizni szeretnénk
+ * @param {string} errormessage - a hibauzenetnek a szövege
+ * @returns {boolean} - a valid változónkkal tér vissza vagy true vagy false
+ */
 function egyszeruValidacio(inputHtmlelement, errormessage){//létrehozunk egy föggvényt két bemeneti paraméter
     let valid = true;//valid valtozo deklarálása
     if(inputHtmlelement.value === ""){//ellenőrizzük hogy a korszak nevének input mezője üres-e
-        const parentElement = inputHtmlelement.parentElement;//megkeressük a korszak input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
-        const errorPlace = parentElement.querySelector('.error');//a korszak szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
-        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
-            errorPlace.innerHTML = errormessage;//megadjuk neki a hiaüzenetet a bemeneti paraméterünkből (stringet) és itt is iratjuk ki
+        showError(inputHtmlelement, errormessage);{
+            valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
         }
-        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
     }
     return valid;//visszatérünk a valid valtozonkkal
 }
+/**
+ * ha a checkbox be van pipalva, es az adott szerelem mezők uresek, 
+ * hibaüzenet jelenik meg a megfelelo helyen és a validacio nem engedi az uj adat hozzaadasat
+ * ha viszont minden hibatlanul ki van toltve akkor true értékkel tér vissza és hozzáadódik a táblázathoz
+ * 
+ * @param {*} szerelem1Input - az elso szerelem input mezo
+ * @param {*} szerelem2Input - a masodik szerelem input mezo
+ * @param {*} checkboxChecked - a checkbox ami meghatarozza, hogy van-e masodik szerelem
+ * @param {*} errormessageSz1 - hiba uzenet szoveg az elso szerelemhez
+ * @param {*} errormessageChck - hiba uzenet szoveg a checkboxhoz
+ * @param {*} errormessageSz2 - hiba uzenet szoveg a masodik szerelemhez
+ * @returns - visszater a valid valtozoval, ture / false
+ */
+
 function osszetettValidacio(szerelem1Input, szerelem2Input, checkboxChecked, errormessageSz1, errormessageChck, errormessageSz2){//létrehozok egy függvényt ami sok bemeneti paramétert vár
     let valid = true;//valid változónk megadása
     if(checkboxChecked.checked === true && szerelem1Input.value === "" && szerelem2Input.value !== ""){//ha a checkboxunk be van pipálva és a szerelem1 üres de a szerelem2 meg nem akkor:
-        const parentElement = szerelem1Input.parentElement;//megkeressük a szerelem1 input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
-        const errorPlace = parentElement.querySelector('.error');//a szerelem1 szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
-        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
-            errorPlace.innerHTML = errormessageSz1;//megadjuk neki a hiaüzenetet manuálisan (stringet) és itt is iratjuk ki
+        showError(szerelem1Input, errormessageSz1);{
+            valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
         }
-        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
     }
     if(checkboxChecked.checked === true && szerelem1Input.value !== "" && szerelem2Input.value === ""){//ha a checkboxunk be van pipálva és a szerelem2 üres de a szerelem1 meg nem akkor:
-        const parentElement = szerelem2Input.parentElement;//megkeressük a szerelem2 input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
-        const errorPlace = parentElement.querySelector('.error');//a szerelem2 szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
-        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
-            errorPlace.innerHTML = errormessageSz2;//megadjuk neki a hiaüzenetet manuálisan (stringet) és itt is iratjuk ki
-        }
-        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+        showError(szerelem2Input, errormessageSz2);{
+            valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+        }    
     }
     if(checkboxChecked.checked === true && szerelem1Input.value === "" && szerelem2Input.value === ""){//ha a checkboxunk be van pipálva és a szerelem1 üres és a szerelem2 is akkor:
-        const parentElement = checkboxChecked.parentElement;//megkeressük a masodik input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
-        const errorPlace = parentElement.querySelector('.error');//a masodik szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
-        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
-            errorPlace.innerHTML = errormessageChck;//megadjuk neki a hiaüzenetet manuálisan (stringet) és itt is iratjuk ki
+        showError(checkboxChecked, errormessageChck);{
+            valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
         }
-        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
     }
     return valid;//visszatérünk ezzel a változónkkal
 }
+
+/**
+ * Ez egy segédfüggvény, ezáltal az egyszeruValidation függvényembe csak meg kell ezt hívni és meg is lesz jelenítve a hibaüzenet
+ * 
+ * 
+ * @param {htmlElement} inputHtmlelement - ehhez a htmlelementhez kell hozzárendelni a hibaüzenetet
+ * @param {string} errormessage - az aktuális megjelenítendő hibaüzenet
+ */
+function showError(inputHtmlelement, errormessage){//itt hozzuk létre a függvényünket
+    const errorPlace = inputHtmlelement.parentElement.querySelector('.error');//az aktuális html elem szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
+    if(errorPlace !== undefined){//hogyha van ilyen hely ahol meg tudja jeleníteni az errormessaget akkor:
+        errorPlace.innerHTML = errormessage;//megadjuk neki a bemeneti paraméterből a hiaüzenetet (stringet) és itt is iratjuk ki
+    }
+}
+/**
+ * itt váltjuk ki a colgroupos kódismétlést
+ * egy komplex objektumot járunk be és mind a 3 esetben hozzárendelünk egy classt a colokhoz csak a középsőnek nem adok meg semmit
+ * 
+ */
+function colgroupFuggveny() { //létrehozunk egy függvényt a colgroup elem hozzáadásához
+    const colgroup = document.createElement('colgroup'); //letrehozzuk a colgroup elemet
+    table.appendChild(colgroup); //hozzaadjuk a table elemhez a colgroup elemet
+
+    const oszlopok = [//definiáljuk a komplex objektumot, amely tartalmazza az oszlopok jellemzőit
+        {addClass: "column"}, //az első oszlophoz hozzáadjuk a "column" class-ot
+        {addClass: "" }, //a második oszlophoz nem adunk hozzá class-ot
+        {addClass: "column" } //a harmadik oszlophoz is hozzáadjuk a "column" class-ot
+    ];
+
+    //vegigiterálunk az oszlopok tömbjén, és minden oszlophoz létrehozzuk a col elemet
+    for (const elem of oszlopok) { //minden egyes oszlopra (elem) végrehajtjuk a műveleteket
+        const col = document.createElement('col'); //letrehozzuk a col elemet
+
+        col.className = elem.addClass; //beallitjuk a col elem class-ját az objektumban szereplő ertek alapjan
+        colgroup.appendChild(col); //Hozzaadjuk a col elemet a colgroup elemhez
+    }
+}
+
+colgroupFuggveny(); //Meghivjuk a colgroupFuggveny függvényt hogy végrehajtsa a kódot
+
