@@ -145,7 +145,31 @@ form.addEventListener('submit', function (e) {
     if(!egyszeruValidacio(korszak_HTMLelement, "Add meg a korszakot")){//itt hívjuk meg a függvényünket
         valid = false;//a valid változónak false értéket adunk
     }
-
+    if(volteMasikcheck.checked = true && szerelem1_value === "" && szerelem2_value !== ""){//ha a checkboxunk be van pipálva és a szerelem1 üres de a szerelem2 meg nem akkor:
+        const parentElement = szerelem1_HTMLelement.parentElement;//megkeressük a szerelem1 input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
+        const errorPlace = parentElement.querySelector('.error');//a szerelem1 szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
+        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
+            errorPlace.innerHTML = "add már meg az elso szerelmét!";//megadjuk neki a hiaüzenetet manuálisan (stringet) és itt is iratjuk ki
+        }
+        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+    }
+    if(volteMasikcheck.checked = true && szerelem1_value !== "" && szerelem2_value === ""){//ha a checkboxunk be van pipálva és a szerelem2 üres de a szerelem1 meg nem akkor:
+        const parentElement = szerelem2_HTMLelement.parentElement;//megkeressük a szerelem2 input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
+        const errorPlace = parentElement.querySelector('.error');//a szerelem2 szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
+        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
+            errorPlace.innerHTML = "hol a második szerelme";//megadjuk neki a hiaüzenetet manuálisan (stringet) és itt is iratjuk ki
+        }
+        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+    }
+    if(volteMasikcheck.checked = true && szerelem1_value === "" && szerelem2_value === ""){//ha a checkboxunk be van pipálva és a szerelem1 üres és a szerelem2 is akkor:
+        const parentElement = volteMasikcheck.parentElement;//megkeressük a masodik input mezőjének parentElement tulajdonságát és ezt eltároljuk egy változóba 
+        const errorPlace = parentElement.querySelector('.error');//a masodik szuloelemeben keresünk egy olyan elemet ami rendelkezik az error classal
+        if(errorPlace !== undefined){//ha van ilyen hely ahova majd tudja rakni a hibaüzenetet és nem undefined akkor:
+            errorPlace.innerHTML = "add meg mindkét szerelmet";//megadjuk neki a hiaüzenetet manuálisan (stringet) és itt is iratjuk ki
+        }
+        valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
+    }
+    
 
     if(szerelem1_value === ""){//hogyha nem írtak semmit a szerelem1 inputjába akkor:
         szerelem1_value = "-";//egy kötőjelet fogunk megjeleníteni
