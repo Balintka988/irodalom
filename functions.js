@@ -113,9 +113,8 @@ function renderTable(koltok_array){//itt definiálom a renderTable függvényeme
 function egyszeruValidacio(inputHtmlelement, errormessage){//létrehozunk egy föggvényt két bemeneti paraméter
     let valid = true;//valid valtozo deklarálása
     if(inputHtmlelement.value === ""){//ellenőrizzük hogy a korszak nevének input mezője üres-e
-        showError(inputHtmlelement, errormessage);{
+        showError(inputHtmlelement, errormessage)
             valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
-        }
     }
     return valid;//visszatérünk a valid valtozonkkal
 }
@@ -136,19 +135,17 @@ function egyszeruValidacio(inputHtmlelement, errormessage){//létrehozunk egy f�
 function osszetettValidacio(szerelem1Input, szerelem2Input, checkboxChecked, errormessageSz1, errormessageChck, errormessageSz2){//létrehozok egy függvényt ami sok bemeneti paramétert vár
     let valid = true;//valid változónk megadása
     if(checkboxChecked.checked === true && szerelem1Input.value === "" && szerelem2Input.value !== ""){//ha a checkboxunk be van pipálva és a szerelem1 üres de a szerelem2 meg nem akkor:
-        showError(szerelem1Input, errormessageSz1);{
+        showError(szerelem1Input, errormessageSz1)
             valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
-        }
     }
     if(checkboxChecked.checked === true && szerelem1Input.value !== "" && szerelem2Input.value === ""){//ha a checkboxunk be van pipálva és a szerelem2 üres de a szerelem1 meg nem akkor:
-        showError(szerelem2Input, errormessageSz2);{
+        showError(szerelem2Input, errormessageSz2)
             valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
-        }    
     }
     if(checkboxChecked.checked === true && szerelem1Input.value === "" && szerelem2Input.value === ""){//ha a checkboxunk be van pipálva és a szerelem1 üres és a szerelem2 is akkor:
-        showError(checkboxChecked, errormessageChck);{
+        showError(checkboxChecked, errormessageChck)
             valid = false;//a valid változónkat false-ra állítjuk ezáltal nem adódik majd a táblázatunkhoz új sor
-        }
+        
     }
     return valid;//visszatérünk ezzel a változónkkal
 }
